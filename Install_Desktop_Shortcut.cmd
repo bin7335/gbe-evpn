@@ -1,0 +1,3 @@
+@echo off
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& { $target = Join-Path '%~dp0' 'EVPN_Edge_Launcher.cmd'; $desktop = [Environment]::GetFolderPath('Desktop'); $lnk = Join-Path $desktop 'EVPN Dedicated Edge.lnk'; $wsh = New-Object -ComObject WScript.Shell; $sc = $wsh.CreateShortcut($lnk); $sc.TargetPath = $target; $sc.WorkingDirectory = '%~dp0'; $sc.IconLocation = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe,0'; $sc.Save(); Write-Host 'Created Desktop Shortcut successfully!' -ForegroundColor Green }"
+pause
