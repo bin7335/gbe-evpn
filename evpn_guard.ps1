@@ -1,4 +1,14 @@
-﻿$Host.UI.RawUI.WindowTitle = "[켜두세요] EVPN 인터넷 동시접속 자동 가드 (크롬=일반인터넷 / 엣지=EVPN)"
+# 관리자 권한 확인 (미보유 시 관리자 권한으로 자동 승격 실행)
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $isAdmin) {
+    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    exit
+}
+
+# 엣지(Edge) EVPN 및 나이스 전용 창 자동 실행
+Start-Process "msedge.exe" -ArgumentList '--new-window "https://evpn.gbe.kr" "https://gbe.neis.go.kr"' -ErrorAction SilentlyContinue
+
+$Host.UI.RawUI.WindowTitle = "[켜두세요] EVPN 인터넷 동시접속 자동 가드 (크롬=일반인터넷 / 엣지=EVPN)"
 
 Write-Host "================================================================" -ForegroundColor Cyan
 Write-Host "  [EVPN 인터넷 동시접속 자동 가드 실행 중]" -ForegroundColor Cyan
