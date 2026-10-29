@@ -1,9 +1,15 @@
-# 관리자 권한 확인 (미보유 시 관리자 권한으로 자동 승격 실행)
+﻿# 관리자 권한 확인 (미보유 시 관리자 권한으로 자동 승격 실행)
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 if (-not $isAdmin) {
     Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     exit
 }
+
+# 콘솔 한글 인코딩 UTF-8 설정
+try {
+    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+    $OutputEncoding = [System.Text.Encoding]::UTF8
+} catch {}
 
 # 엣지(Edge) EVPN 및 나이스 전용 창 자동 실행
 Start-Process "msedge.exe" -ArgumentList '--new-window "https://evpn.gbe.kr" "https://gbe.neis.go.kr"' -ErrorAction SilentlyContinue
@@ -56,7 +62,7 @@ Write-Host ""
 $wasConnected = $false
 
 while ($true) {
-    $tapAdapter = Get-NetAdapter | Where-Object { $_.InterfaceDescription -match 'TAP-Windows|AXGATE|VPN' -or $_.Name -eq '이더넷 2' } | Select-Object -First 1
+    $tapAdapter = Get-NetAdapter | Where-Object { $_.InterfaceDescription -match 'TAP-Windows|AXGATE|VPN' -or $_.Name -match '이더넷 2' } | Select-Object -First 1
 
     if ($tapAdapter -and $tapAdapter.Status -eq 'Up') {
         $vpnIf = $tapAdapter.ifIndex
